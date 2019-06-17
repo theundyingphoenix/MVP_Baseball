@@ -20,13 +20,8 @@ def bwar_bat_interval(day):
 
 	with ZipFile(zip_file) as myzip:
 	    with myzip.open('war_daily_bat.txt') as myfile:
-	        print(myfile.read())	
+	    	c = pd.read_csv(io.StringIO(myfile.read().decode('utf-8')))
 
-	print(s)
-	# with s.open('war_daily_bat.txt') as myfile:
-	# 	print(myfile.read())
-	# s is an an object not a file name anymore, contains data
-	
 	# print("Retrieved file...\nUnzipping...\n")
 	# unzipped_file = zipfile.ZipFile(s.decode('utf-8'), 'r')
 	# unzipped_file.extractall("/home/user")
@@ -34,10 +29,10 @@ def bwar_bat_interval(day):
 	# s = open("/home/user"+file)
 	# c = pc.read_csv(io.StringIO(s))
 
-	# cols_to_keep = ['name_common', 'mlb_ID', 'player_ID', 'year_ID', 'team_ID', 'stint_ID', 'lg_ID', 
-	# 				'pitcher','G', 'PA', 'salary', 'runs_above_avg', 'runs_above_avg_off','runs_above_avg_def',
-	# 				'WAR_rep','WAA','WAR']
-	return None				
+	cols_to_keep = ['name_common', 'mlb_ID', 'player_ID', 'year_ID', 'team_ID', 'stint_ID', 'lg_ID', 
+					'pitcher','G', 'PA', 'salary', 'runs_above_avg', 'runs_above_avg_off','runs_above_avg_def',
+					'WAR_rep','WAA','WAR']
+	return c[cols_to_keep]				
 
 print("Finding data")
 lf = bwar_bat_interval("2013-12-31")
