@@ -4,6 +4,8 @@ import datetime
 import io
 from bs4 import BeautifulSoup
 from zipfile import ZipFile
+from pymongo import MongoClient
+import json
 
 def bwar_bat_interval(day):
 	
@@ -21,13 +23,7 @@ def bwar_bat_interval(day):
 	with ZipFile(zip_file) as myzip:
 	    with myzip.open('war_daily_bat.txt') as myfile:
 	    	c = pd.read_csv(io.StringIO(myfile.read().decode('utf-8')))
-	
-	# print("Retrieved file...\nUnzipping...\n")
-	# unzipped_file = zipfile.ZipFile(s.decode('utf-8'), 'r')
-	# unzipped_file.extractall("/home/user")
-	# unzipped_file.close()
-	# s = open("/home/user"+file)
-	# c = pc.read_csv(io.StringIO(s))
+
 
 	cols_to_keep = ['name_common', 'mlb_ID', 'player_ID', 'year_ID', 'team_ID', 'stint_ID', 'lg_ID', 
 					'pitcher','G', 'PA', 'salary', 'runs_above_avg', 'runs_above_avg_off','runs_above_avg_def',
@@ -36,9 +32,20 @@ def bwar_bat_interval(day):
 	stopping_year = 2013
 	c = c[c.year_ID >= 2013]
 	c = c[c.lg_ID != "AL"]
-	c = c[c.pitcher == "N"]				
+	c = c[c.pitcher == "N"]	
+	# c = c[c.name_common == "Lane Adams"]			
 	return c[cols_to_keep]				
 
-print("Finding data")
-lf = bwar_bat_interval("2017-05-08")
-print(lf)	
+client = MongoClient('localhost', 27017)
+db = client['baseball_stats']
+collection = 'war_stats_2017_05_08'
+db_cm = db[collection]
+
+interval = "2017-05-08"
+print("Finding data for "+interval)
+lf = bwar_bat_interval(interval)
+print("DataFrame collected")
+
+json_data = json.loads(lf.to_json(orient='records'))
+db_cm.remove()
+db_cm.insert(json_data)	
