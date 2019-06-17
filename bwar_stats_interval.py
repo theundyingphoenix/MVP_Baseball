@@ -12,7 +12,7 @@ def bwar_bat_interval(day):
 	file = "war_archive-"+day
 	zip_file = file+".zip"
 	url = "http://www.baseball-reference.com/data/"+zip_file
-	print("Retrieving file...\n")
+	print("Retrieving data from 2013-03-29 to "+zip_file+"...\n")
 	s = requests.get(url)
 
 	with open(zip_file, 'wb') as code:
@@ -21,7 +21,7 @@ def bwar_bat_interval(day):
 	with ZipFile(zip_file) as myzip:
 	    with myzip.open('war_daily_bat.txt') as myfile:
 	    	c = pd.read_csv(io.StringIO(myfile.read().decode('utf-8')))
-
+	
 	# print("Retrieved file...\nUnzipping...\n")
 	# unzipped_file = zipfile.ZipFile(s.decode('utf-8'), 'r')
 	# unzipped_file.extractall("/home/user")
@@ -32,8 +32,13 @@ def bwar_bat_interval(day):
 	cols_to_keep = ['name_common', 'mlb_ID', 'player_ID', 'year_ID', 'team_ID', 'stint_ID', 'lg_ID', 
 					'pitcher','G', 'PA', 'salary', 'runs_above_avg', 'runs_above_avg_off','runs_above_avg_def',
 					'WAR_rep','WAA','WAR']
+
+	stopping_year = 2013
+	c = c[c.year_ID >= 2013]
+	c = c[c.lg_ID != "AL"]
+	c = c[c.pitcher == "N"]				
 	return c[cols_to_keep]				
 
 print("Finding data")
-lf = bwar_bat_interval("2013-12-31")
+lf = bwar_bat_interval("2017-05-08")
 print(lf)	
