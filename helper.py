@@ -3,7 +3,7 @@ import datetime
 list_of_2013 = []
 
 date1 = '2013-03-01'
-date2 = '2018-10-30'
+date2 = '2018-10-31'
 
 months_disregard = ['01','02','11','12']
 
@@ -23,4 +23,8 @@ while start <= end:
 	
 	start += step
 
-print(list_of_2013)	
+for idx, item in enumerate(list_of_2013):
+	print(item)
+	
+	
+	
