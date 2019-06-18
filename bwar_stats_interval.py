@@ -76,7 +76,6 @@ for i in range(len(interval)):
 
 	lf = lf[lf.year_ID >= 2013]
 	lf = lf[lf.lg_ID != "AL"]
-	lf = lf[lf.pitcher == "N"]
 	if lf.empty:
 		continue		
 	print("DataFrame collected")
