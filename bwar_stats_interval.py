@@ -18,7 +18,7 @@ def bwar_bat_interval(day):
 	print("Retrieving data from 2013-03-29 to "+zip_file+"...\n")
 	
 	s = requests.get(url)
-	if s.status_code == 404:
+	if s.status_code == 404 or s.status_code != 200:
 		return None
 
 	with open(zip_file, 'wb') as code:
@@ -39,11 +39,6 @@ def bwar_bat_interval(day):
 
 client = MongoClient('localhost', 27017)
 print("Acquired mongodb client...\n")
-
-# years = ['2013','2014','2015','2016','2017','2018']
-
-# collection = 'war_archive-2017-05-08'
-# db_cm = db[collection]
 
 
 # import the dates to have the war_daily_bat.txt
