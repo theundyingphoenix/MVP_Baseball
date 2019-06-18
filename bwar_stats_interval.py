@@ -38,10 +38,23 @@ def bwar_bat_interval(day):
 
 client = MongoClient('localhost', 27017)
 db = client['baseball_stats']
+
+years = ['2013','2014','2015','2016','2017','2018']
+
+
 collection = 'war_stats_2017_05_08'
 db_cm = db[collection]
 
-interval = "2017-05-08"
+
+# import the dates to have the war_daily_bat.txt
+interval = []
+f = open("/home/user/seasons", 'r')
+l = f.readline()[:-1]
+while l:
+	interval.append(l)
+	l = f.readline()[:-1]
+
+
 print("Finding data for "+interval)
 lf = bwar_bat_interval(interval)
 print("DataFrame collected")
@@ -49,3 +62,4 @@ print("DataFrame collected")
 json_data = json.loads(lf.to_json(orient='records'))
 db_cm.remove()
 db_cm.insert(json_data)	
+
