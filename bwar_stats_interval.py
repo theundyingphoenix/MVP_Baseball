@@ -134,7 +134,7 @@ for i in range(len(interval)):
 	print("Finding data for "+interval[i])
 	lf = bwar_bat_interval(interval[i])	
 
-	if lf.empty:
+	if lf.empty or not lf:
 		continue
 	lf = lf[lf.year_ID >= 2013]
 	lf = lf[lf.lg_ID != "AL"]
