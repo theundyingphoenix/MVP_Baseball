@@ -126,8 +126,8 @@ for i in range(len(interval)):
 	if i < update_index:
 		continue	
 
-
-	db = client['baseball_stats_'+interval[i][:4]]
+	year = interval[i][:4]
+	db = client['baseball_stats_'+year]
 	collection = 'war_archive_'+under_interval[i]
 	db_cm = db[collection]
 
@@ -136,7 +136,7 @@ for i in range(len(interval)):
 	if lf is None:
 		continue
 	
-	lf = lf[lf.year_ID >= 2013]
+	lf = lf[lf.year_ID >= year]
 	lf = lf[lf.lg_ID != "AL"]
 	if lf.empty:
 		continue
