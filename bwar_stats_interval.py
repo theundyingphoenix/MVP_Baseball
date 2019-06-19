@@ -133,11 +133,13 @@ for i in range(len(interval)):
 
 	print("Finding data for "+interval[i])
 	lf = bwar_bat_interval(interval[i])	
-
-	if lf.empty or not lf:
+	if lf is None:
 		continue
+	
 	lf = lf[lf.year_ID >= 2013]
 	lf = lf[lf.lg_ID != "AL"]
+	if lf.empty:
+		continue
 
 	print("DataFrame collected")
 	
