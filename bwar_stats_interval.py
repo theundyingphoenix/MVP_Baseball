@@ -18,7 +18,7 @@ def catalogue_database(client):
 
 	dates = []
 	underscored_dates = []
-	f = open("/home/user/seasons.txt", 'r')
+	f = open(os.getcwd()+"/seasons.txt", 'r')
 	line = f.readline()
 	while line:
 		dates.append(line)
@@ -93,7 +93,7 @@ interval = []
 
 
 print("Opening seasons.txt & season.txt...\n")
-f = open("/home/user/seasons.txt", 'r')
+f = open(os.getcwd()+"/seasons.txt", 'r')
 # remove the \n
 l = f.readline()[:-1]
 while l:
@@ -106,10 +106,14 @@ print("Collected the dates of stats to import...\n")
 
 catalogued = False
 update_index = -1
+no_db_filled = False
 for i in range(len(interval)):
 	# to prevent process from starting from the beginning
-	if not catalogued:
+	if not catalogued or not no_db_filled:
 		present_archives = catalogue_database(client)
+		if not present_archives:
+			no_db = True
+			continue
 		most_recently_added = present_archives[-1]
 		# i is an index NOT string, so update the index
 		# find the position in interval[index] that matches
@@ -144,7 +148,4 @@ for i in range(len(interval)):
 	db_cm.remove()
 	db_cm.insert(json_data)	
 	print("JSON data added to MongoDB...")
-	saved_checkpoint = open("/home/user/checkpoint.txt", 'w')
-	saved_checkpoint.write(interval[i])
-	saved_checkpoint.close()
 	os.remove("war_archive-"+interval[i]+".zip")
