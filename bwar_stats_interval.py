@@ -109,21 +109,19 @@ update_index = -1
 no_db_filled = False
 for i in range(len(interval)):
 	# to prevent process from starting from the beginning
-	if not catalogued or not no_db_filled:
+	if not catalogued:
 		present_archives = catalogue_database(client)
-		if not present_archives:
-			no_db = True
+		if present_archives:
+			most_recently_added = present_archives[-1]
+			# i is an index NOT string, so update the index
+			# find the position in interval[index] that matches
+			# the most_recently_added
+			most_recently_added = most_recently_added[12:].replace("_","-")
+			# now find the index pertaining to most_recently_added
+			i = interval.index(most_recently_added)
+			update_index = i
+			catalogued = True
 			continue
-		most_recently_added = present_archives[-1]
-		# i is an index NOT string, so update the index
-		# find the position in interval[index] that matches
-		# the most_recently_added
-		most_recently_added = most_recently_added[12:].replace("_","-")
-		# now find the index pertaining to most_recently_added
-		i = interval.index(most_recently_added)
-		update_index = i
-		catalogued = True
-		continue
 
 	if i < update_index:
 		continue	
