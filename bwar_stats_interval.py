@@ -134,12 +134,11 @@ for i in range(len(interval)):
 	print("Finding data for "+interval[i])
 	lf = bwar_bat_interval(interval[i])	
 
+	if lf.empty:
+		continue
 	lf = lf[lf.year_ID >= 2013]
 	lf = lf[lf.lg_ID != "AL"]
 
-	if lf.empty:
-		continue		
-	
 	print("DataFrame collected")
 	
 	json_data = json.loads(lf.to_json(orient='records'))
