@@ -136,7 +136,7 @@ for i in range(len(interval)):
 	if lf is None:
 		continue
 	
-	lf = lf[lf.year_ID >= year]
+	lf = lf[lf.year_ID >= int(year)]
 	lf = lf[lf.lg_ID != "AL"]
 	if lf.empty:
 		continue
