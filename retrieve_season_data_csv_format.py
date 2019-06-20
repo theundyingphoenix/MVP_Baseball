@@ -52,19 +52,7 @@ for i in top_performer_IDs:
 		pair = str(g)+","+str(war)+"\n"
 		f.write(pair)
 	f.close()	
-# f = open('/home/user/2013_GvWAR.txt', 'w')
-
-
-# from each top-performer we need the list of (G,WAR)-pairs in each
-# archive for the whole season -- A way to store separate files for 
-# each regressor model, then compare those models
-# !!! Need a way to associate a file to a player and regressor !!!
 
 
 
-# create regressor and follow code in the Packt Publ. Books in
-# another python program or this one??
 
-
-# after running ML model training remove files of season data pts. 
-# package up model for persistence to carry on to next season
