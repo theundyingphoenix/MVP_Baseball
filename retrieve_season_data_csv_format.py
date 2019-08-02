@@ -4,7 +4,7 @@ import numpy as np
 import sys, re, os
 
 # create connection to database
-client = pymongo.MongoClient('10.109.29.134', 27017)
+client = pymongo.MongoClient('localhost', 27017) # change 'localhost' to MongoDB holding stats
 
 # season interested in
 database_names = client.database_names()
