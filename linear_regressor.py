@@ -74,7 +74,7 @@ def testing_function_for_2019():
 	# print("Median absolute error =", round(sm.median_absolute_error(y_test, y_test_pred), 2)) 
 	# print("Explain variance score =", round(sm.explained_variance_score(y_test, y_test_pred), 2)) 
 	# print("R2 score =", round(sm.r2_score(y_test, y_test_pred), 2))
-	R2_Score = round(sm.r2_score(y_test,y_test_pred),2))
+	R2_Score = round(sm.r2_score(y_test,y_test_pred),2)
 
 	scores = model_selection.cross_val_score(estimator=linear_regressor,
 							X=X_train,
@@ -179,7 +179,7 @@ def training_function_across_seasons(fn,mod_lin_regr,num):
 	# print("Median absolute error =", round(sm.median_absolute_error(y_test, y_test_pred), 2)) 
 	# print("Explain variance score =", round(sm.explained_variance_score(y_test, y_test_pred), 2)) 
 	# print("R2 score =", round(sm.r2_score(y_test, y_test_pred), 2))
-	R2_Score = round(sm.r2_score(y_test,y_test_pred),2))
+	R2_Score = round(sm.r2_score(y_test,y_test_pred),2)
 
 	scores = model_selection.cross_val_score(estimator=linear_regressor,
 							X=X_train,
