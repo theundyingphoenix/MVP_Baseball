@@ -1,6 +1,9 @@
 import datetime
 
-list_of_2013 = []
+''' Provide a list of dates to search the 
+    baseball-reference site in appropriate format.'''
+
+list_of_dates = []
 
 date1 = '2013-03-01'
 date2 = '2018-10-31'
@@ -19,11 +22,11 @@ while start <= end:
 			do_not_add_date = True
 	
 	if not do_not_add_date:
-		list_of_2013.append(str(start.date()))
+		list_of_dates.append(str(start.date()))
 	
 	start += step
 
-for idx, item in enumerate(list_of_2013):
+for idx, item in enumerate(list_of_dates):
 	print(item)
 	
 	
