@@ -8,38 +8,45 @@ from zipfile import ZipFile
 import json
 import pymongo
 
+'''  '''
+
+# Method to check which archives are already present
 def catalogue_database(client):
+	# Create connection to MongoDB
 	client = pymongo.MongoClient('localhost', 27017)
+	# Grab the list of databases present
 	list_of_databases = client.database_names()
 
-
+	# Prefixes in correct format
 	db_prefix = 'baseball_stats_'
 	collection_prefix = 'war_archive_'
 
 	dates = []
 	underscored_dates = []
-	f = open(os.getcwd()+"/seasons.txt", 'r')
+	f = open(os.getcwd()+"/season.txt", 'r')
 	line = f.readline()
 	while line:
 		dates.append(line)
 		line = f.readline()
 
 	years_present = {}
-	for u in range(len(dates)):
-		year = dates[u][:4]	
+	for i in range(len(dates)):
+		year = dates[i][:4]	
 		db = db_prefix+year
 	
-		for i in range(len(list_of_databases)):
-			if year in list_of_databases[i]:
+		for j in range(len(list_of_databases)):
+			if year in list_of_databases[j]:
 				years_present[year] = True
 
 	# for the year's db we want to mark the values in underscored_dates
 	# as True to catalogue the archives present, then take the latest
 	# date as the place to start
 
+	# Archive all the dates that are present in the database
 	for k in years_present:
 		# access the db
 		db = db_prefix+k
+		# Grab a specific database
 		db = pymongo.database.Database(client,db)
 		archived_dates = db.list_collection_names()
 		for a in archived_dates:
@@ -51,7 +58,6 @@ def catalogue_database(client):
 
 def bwar_bat_interval(day):
 	
-	return_all = False
 	# format war_archive-YYYY-MM-DD
 	file = "war_archive-"+day
 	zip_file = file+".zip"
@@ -62,6 +68,7 @@ def bwar_bat_interval(day):
 
 	if s.status_code == 200:
 		print(s.status_code)
+		print("File exists.")
 	else:
 		return None	
 
@@ -77,53 +84,43 @@ def bwar_bat_interval(day):
 					'pitcher','G', 'PA', 'salary', 'runs_above_avg', 'runs_above_avg_off','runs_above_avg_def',
 					'WAR_rep','WAA','WAR']
 	
-
-	
 	return c[cols_to_keep]				
 
+
+# Create a connection with the database
 client = pymongo.MongoClient('localhost', 27017)
 print("Acquired mongodb client...\n")
 
-# import the dates to have the war_daily_bat.txt
-# for storing archives in correct format
-under_interval = [] 
 # for the list of dates to traverse in url format
 interval = [] 
 
-
-
-print("Opening seasons.txt & season.txt...\n")
-f = open(os.getcwd()+"/seasons.txt", 'r')
+print("Opening season.txt...\n")
+f = open(os.getcwd()+"/season.txt", 'r')
 # remove the \n
 l = f.readline()[:-1]
 while l:
 	interval.append(l)
-	under_interval.append(l.replace("-","_"))
 	l = f.readline()[:-1]
 f.close()
 
 print("Collected the dates of stats to import...\n")
 
 catalogued = False
+update = ""
 update_index = -1
 no_db_filled = False
 for i in range(len(interval)):
 	# to prevent process from starting from the beginning
+	# in the even program shuts down
 	if not catalogued:
 		present_archives = catalogue_database(client)
 		if present_archives:
 			most_recently_added = present_archives[-1]
-			# i is an index NOT string, so update the index
-			# find the position in interval[index] that matches
-			# the most_recently_added
-			most_recently_added = most_recently_added[12:].replace("_","-")
-			# now find the index pertaining to most_recently_added
-			i = interval.index(most_recently_added)
-			update_index = i
+			update = most_recently_added
 			catalogued = True
 			continue
 
-	if i < update_index:
+	if not update in interval[i]:
 		continue	
 
 	year = interval[i][:4]
