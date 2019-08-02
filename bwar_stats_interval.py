@@ -8,7 +8,8 @@ from zipfile import ZipFile
 import json
 import pymongo
 
-'''  '''
+''' Pulls data from baseball-reference.com into
+    a locally hosted MongoDB.'''
 
 # Method to check which archives are already present
 def catalogue_database(client):
