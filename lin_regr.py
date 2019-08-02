@@ -7,6 +7,9 @@ import sklearn.metrics as sm
 import pickle
 from random import shuffle
 
+def testing_function_for_2019():
+	score = 0
+	return score
 
 def training_function_across_seasons(fn,mod_lin_regr,num):
 	
