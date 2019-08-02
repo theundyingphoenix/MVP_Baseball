@@ -5,6 +5,8 @@ from sklearn import linear_model
 import matplotlib.pyplot as plt
 import sklearn.metrics as sm
 import pickle
+from random import shuffle
+
 
 def training_function_across_seasons(fn,mod_lin_regr,num):
 	
@@ -25,7 +27,7 @@ def training_function_across_seasons(fn,mod_lin_regr,num):
 			X.append(xt)
 			y.append(yt)
 
-	from random import shuffle
+	
 	d = {}
 	for i in X:
 		index = X.index(i)
@@ -69,7 +71,7 @@ def training_function_across_seasons(fn,mod_lin_regr,num):
 		plt.scatter(X_test, y_test, color='green')
 		plt.title('Plotted Data'+" "+fn)
 		plt.xlabel('Games Played')
-		plt.ylabel('Wins-Above-Average')
+		plt.ylabel('Wins-Above-Replacement')
 		plt.show()
 
 		plt.figure()
@@ -77,7 +79,7 @@ def training_function_across_seasons(fn,mod_lin_regr,num):
 		plt.plot(X_train, y_train_pred, color='black', linewidth=4)
 		plt.title('Training data'+" "+fn)
 		plt.xlabel('Games Played')
-		plt.ylabel('Wins-Above-Average')
+		plt.ylabel('Wins-Above-Replacement')
 		plt.show()
 
 	y_test_pred = linear_regressor.predict(X_test)
@@ -87,7 +89,7 @@ def training_function_across_seasons(fn,mod_lin_regr,num):
 		plt.scatter(X_test, y_test, color='green')
 		plt.plot(X_test, y_test_pred, color='black', linewidth=4)
 		plt.xlabel('Games Played')
-		plt.ylabel('Wins-Above-Average')
+		plt.ylabel('Wins-Above-Replacement')
 		plt.title('Test data'+" "+fn)
 		plt.show()
 
@@ -98,10 +100,7 @@ def training_function_across_seasons(fn,mod_lin_regr,num):
 	# print("Median absolute error =", round(sm.median_absolute_error(y_test, y_test_pred), 2)) 
 	# print("Explain variance score =", round(sm.explained_variance_score(y_test, y_test_pred), 2)) 
 	# print("R2 score =", round(sm.r2_score(y_test, y_test_pred), 2))
-
-
-	y_test_pred_new = mod_lin_regr.predict(X_test)
-	# print("New mean absolute error =", round(sm.mean_absolute_error(y_test, y_test_pred_new), 2)) 
+	R2_Score = round(sm.r2_score(y_test,y_test_pred),2))
 
 	scores = model_selection.cross_val_score(estimator=linear_regressor,
 							X=X_train,
@@ -133,7 +132,6 @@ def training_function(fn):
 			X.append(xt)
 			y.append(yt)
 
-	from random import shuffle
 	d = {}
 	for i in X:
 		index = X.index(i)
@@ -176,7 +174,7 @@ def training_function(fn):
 	# plt.scatter(X_test, y_test, color='green')
 	# plt.title('Plotted Data'+" "+fn)
 	# plt.xlabel('Games Played')
-	# plt.ylabel('Wins-Above-Average')
+	# plt.ylabel('Wins-Above-Replacement')
 	# # plt.show()
 
 	# plt.figure()
@@ -184,7 +182,7 @@ def training_function(fn):
 	# plt.plot(X_train, y_train_pred, color='black', linewidth=4)
 	# plt.title('Training data'+" "+fn)
 	# plt.xlabel('Games Played')
-	# plt.ylabel('Wins-Above-Average')
+	# plt.ylabel('Wins-Above-Replacement')
 	# # plt.show()
 
 	y_test_pred = linear_regressor.predict(X_test)
@@ -192,7 +190,7 @@ def training_function(fn):
 	# plt.scatter(X_test, y_test, color='green')
 	# plt.plot(X_test, y_test_pred, color='black', linewidth=4)
 	# plt.xlabel('Games Played')
-	# plt.ylabel('Wins-Above-Average')
+	# plt.ylabel('Wins-Above-Replacement')
 	# plt.title('Test data'+" "+fn)
 	# # plt.show()
 
@@ -203,10 +201,7 @@ def training_function(fn):
 	# print("Median absolute error =", round(sm.median_absolute_error(y_test, y_test_pred), 2)) 
 	# print("Explain variance score =", round(sm.explained_variance_score(y_test, y_test_pred), 2)) 
 	# print("R2 score =", round(sm.r2_score(y_test, y_test_pred), 2))
-
-
-	y_test_pred_new = linear_regressor.predict(X_test)
-	# print("New mean absolute error =", round(sm.mean_absolute_error(y_test, y_test_pred_new), 2)) 
+	R2_Score = round(sm.r2_score(y_test, y_test_pred),2))
 
 	scores = model_selection.cross_val_score(estimator=linear_regressor,
 							X=X_train,
@@ -253,9 +248,9 @@ for i in top_performer_files:
 	
 
 for i in best_init_model.keys():
-	print(i+" Std: "+str(np.std(best_init_model[i][1]))+" Mean: "+str(np.mean(best_init_model[i][1])))
+	print(i+" R2 score: "+best_init_model[i][1]) #Std: "+str(np.std(best_init_model[i][1]))+" Mean: "+str(np.mean(best_init_model[i][1])))
 
-key_max = max(best_init_model.keys(), key=(lambda k: np.mean(best_init_model[k][1])))
+key_max = max(best_init_model.keys(), key=(lambda k: best_init_model[k][1])) #np.mean(best_init_model[k][1])))
 print("\n\nBest init model: "+key_max)
 output_model_file = "3_model_linear_regr.pkl"
 
@@ -279,7 +274,9 @@ for i in top_performer_files:
 		model_linregr = pickle.load(f)
 		
 	lin_reg,scores = training_function_across_seasons(i,model_linregr,0)
-	best_season_trained_model[i] = (lin_reg, scores)
+	with open(output_model_file, 'wb') as f:
+		pickle.dump(lin_reg, f)
+	# best_season_trained_model[i] = (lin_reg, scores)
 	
 print("\n\n")
 # for i in best_season_trained_model.keys():
