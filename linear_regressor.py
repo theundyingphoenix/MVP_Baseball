@@ -8,8 +8,84 @@ import pickle
 from random import shuffle
 
 def testing_function_for_2019():
+	
 	score = 0
-	return score
+	
+	filename = "baseball_stats_folder/"+fn
+
+	X = []
+	y = []
+
+
+	with open(filename, 'r') as f:
+		for line in f.readlines():
+			# some values will have None
+			t = line.split(',')
+			if 'None' in t[0] or 'None' in t[1]:
+				continue
+			xt = float(t[0])
+			yt = float(t[1])
+			X.append(xt)
+			y.append(yt)
+
+	
+	d = {}
+	for i in X:
+		index = X.index(i)
+		d[i] = y[index]
+
+	shuffle(X)
+
+	y = []
+	for i in X:
+		y.append(d[i])
+
+	# Train/test split
+	num_training = int(1.0 * len(X))
+	num_test = len(X) 
+
+
+
+	# Training data
+	X_train = np.array(X[:num_training]).reshape((num_training,1))
+	y_train = np.array(y[:num_training])
+
+
+	# Test data
+	X_test = np.array(X[num_training:]).reshape((num_test,1))
+	y_test = np.array(y[num_training:])
+
+
+	# Create linear regression object
+	linear_regressor = mod_lin_regr
+
+	# Train the model using the training sets
+	# linear_regressor.fit(X_train, y_train)
+
+	# Predict the output
+	# y_train_pred = linear_regressor.predict(X_train)
+
+	y_test_pred = linear_regressor.predict(X_test)
+
+
+	# # Measure performance
+	# print("Mean absolute error =", round(sm.mean_absolute_error(y_test, y_test_pred), 2)) 
+	# print("Mean squared error =", round(sm.mean_squared_error(y_test, y_test_pred), 2)) 
+	# print("Median absolute error =", round(sm.median_absolute_error(y_test, y_test_pred), 2)) 
+	# print("Explain variance score =", round(sm.explained_variance_score(y_test, y_test_pred), 2)) 
+	# print("R2 score =", round(sm.r2_score(y_test, y_test_pred), 2))
+	R2_Score = round(sm.r2_score(y_test,y_test_pred),2))
+
+	scores = model_selection.cross_val_score(estimator=linear_regressor,
+							X=X_train,
+							y=y_train,
+							cv=10,
+							n_jobs=1)
+	error = round(sm.mean_squared_error(y_test, y_test_pred), 2)
+	# print('CV accuracy scores: %s' % scores)
+	# print('CV accuracy: %.3f +/- %.3f' % (np.mean(scores), np.std(scores)))
+
+	return linear_regressor,error
 
 def training_function_across_seasons(fn,mod_lin_regr,num):
 	
@@ -114,7 +190,7 @@ def training_function_across_seasons(fn,mod_lin_regr,num):
 	# print('CV accuracy scores: %s' % scores)
 	# print('CV accuracy: %.3f +/- %.3f' % (np.mean(scores), np.std(scores)))
 
-	return linear_regressor,scores
+	return linear_regressor,R2_Score
 
 def training_function(fn):
 
@@ -215,7 +291,7 @@ def training_function(fn):
 	# print('CV accuracy scores: %s' % scores)
 	# print('CV accuracy: %.3f +/- %.3f' % (np.mean(scores), np.std(scores)))
 
-	return linear_regressor,scores
+	return linear_regressor,R2_Score
 
 
 top_performer_files = []
@@ -292,9 +368,7 @@ output_model_file = "best_model_linear_regr.pkl"
 with open(output_model_file, 'wb') as f:
 	pickle.dump(best_season_trained_model[key_max][0], f)
 
-
-
-
+	
 import sys
 lowest_std = sys.float_info.max
 mvp = ""
@@ -334,21 +408,17 @@ for i in top_performer_files:
 		model_linregr = pickle.load(f)
 
 	file = i	
-	f_o = "/home/user/baseball_stats_folder/"+file
-	f_o = open(f_o, 'r')
-	line = f_o.readlines()[-1]
-	total_games, WAR = line.split(',')
-	lin_reg,scores = training_function_across_seasons(file,model_linregr,0)
+	lin_reg,scores = testing_function_for_2019(file,model_linregr,0)
 	
-	cont_check = float(np.std(scores))
+	cont_check = float(scores)
 	if cont_check <= 0.0:
 		continue
-	gp_war_dict[i] = line	
-	mvp_dict_finder[i] = float(np.std(scores))
+
+	mvp_dict_finder[i] = float(scores)
 	
 
 key_min = min(mvp_dict_finder.keys(), key=(lambda k: mvp_dict_finder[k]))
 mvp = key_min
-print(mvp+" Deviation: "+str(mvp_dict_finder[mvp])+"\n\n\n\n")
+print(mvp+" least error: "+str(mvp_dict_finder[mvp])+"\n\n\n\n")
 for i in mvp_dict_finder:
 	print("ID: "+i+" Std: "+str(mvp_dict_finder[i]))
