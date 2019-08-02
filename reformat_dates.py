@@ -1,3 +1,6 @@
+''' Reformat dates from a hyphen notation to
+    an underscore notation.'''
+
 import os, re
 
 f = open("/home/user/seasons.txt", 'r')
